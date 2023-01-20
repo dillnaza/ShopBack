@@ -29,8 +29,3 @@ def category(request, *args, **kwargs):
     category_info = {'name': category.name}
     return JsonResponse(category_info, safe=False)
 
-
-def index(request):
-    products = models.Products.objects.all()
-    product = [{'name': p.name} for p in products]
-    return JsonResponse(product, safe=False)
