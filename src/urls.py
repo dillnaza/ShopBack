@@ -15,7 +15,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from api import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    #  path('api/categories/<int:id>/products/'),                 #Список продуктов по категориям
+    path('api/category/<id>/', views.category),  # Получить одну категорию
+    path('api/product/<id>/', views.product),  # Получить один продукт
+    path('api/categories/', views.categories),  # Список всех категорий
+    path('api/products/', views.products),  # Список всех продуктов
 ]
