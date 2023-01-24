@@ -1,6 +1,7 @@
 from rest_framework.decorators import api_view
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
+from rest_framework.viewsets import ViewSet
 
 from api import models, serializers
 
@@ -19,15 +20,15 @@ def product_id(request, *args, **kwargs):
     return Response(serializer.data)
 
 
-@api_view(['GET'])
-def categories(request, *args, **kwargs):
-    category = models.Categories.objects.all()
-    serializer = serializers.CategorySerializers(category, many=True)
-    return Response(serializer.data)
+class CategoryView(ViewSet):
+    def list(self, request, *args, **kwargs):
+        categories = models.Categories.objects.all()
+        serializer = serializers.CategorySerializers(categories, many=True)
+        return Response(serializer.data)
 
 
-@api_view(['GET'])
-def category_id(request, *args, **kwargs):
-    category = get_object_or_404(models.Categories.objects.all(), **kwargs)
-    serializer = serializers.CategorySerializers(category)
-    return Response(serializer.data)
+class CategoryIDView(ViewSet):
+    def retrieve(self, request, pk):
+        category = get_object_or_404(models.Categories.objects.all(), pk=pk)
+        serializer = serializers.CategorySerializers(category)
+        return Response(serializer.data)
