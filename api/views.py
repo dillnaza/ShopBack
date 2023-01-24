@@ -1,31 +1,33 @@
-from django.http import JsonResponse
-from django.shortcuts import render
-from . import models
+from rest_framework.decorators import api_view
+from rest_framework.generics import get_object_or_404
+from rest_framework.response import Response
+
+from api import models, serializers
 
 
-def products(request):
-    products = models.Products.objects.all()
-    product = [{'name': p.name} for p in products]
-    return JsonResponse(product, safe=False)
+@api_view(['GET'])
+def products(request, *args, **kwargs):
+    product = models.Products.objects.all()
+    serializer = serializers.ProductsSerializers(product, many=True)
+    return Response(serializer.data)
 
 
-def product(request, *args, **kwargs):
-    product = models.Products.objects.get(id=int(kwargs['id']))
-    product_info = {'name': product.name,
-                    'price': product.price,
-                    'description': product.description,
-                    'count': product.coint}
-    return JsonResponse(product_info, safe=False)
+@api_view(['GET'])
+def product_id(request, *args, **kwargs):
+    product = get_object_or_404(models.Products.objects.all(), **kwargs)
+    serializer = serializers.ProductsSerializers(product)
+    return Response(serializer.data)
 
 
-def categories(request):
-    categories = models.Catrgories.objects.all()
-    category = [{'name': c.name} for c in categories]
-    return JsonResponse(category, safe=False)
+@api_view(['GET'])
+def categories(request, *args, **kwargs):
+    category = models.Categories.objects.all()
+    serializer = serializers.CategorySerializers(category, many=True)
+    return Response(serializer.data)
 
 
-def category(request, *args, **kwargs):
-    category = models.Catrgories.objects.get(id=int(kwargs['id']))
-    category_info = {'name': category.name}
-    return JsonResponse(category_info, safe=False)
-
+@api_view(['GET'])
+def category_id(request, *args, **kwargs):
+    category = get_object_or_404(models.Categories.objects.all(), **kwargs)
+    serializer = serializers.CategorySerializers(category)
+    return Response(serializer.data)
